@@ -1,13 +1,25 @@
-import React, { createContext, useContext } from 'react';
+import React, { createContext, useContext, useEffect, useState } from 'react';
 import { FIREBASE_AUTH } from '../../FirebaseConfig';
+import { User } from 'firebase/auth';
 
 interface AuthContextType {
   signOut: () => Promise<void>;
+  user: User | null;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
+  const [user, setUser] = useState<User | null>(null);
+
+  useEffect(() => {
+    const unsubscribe = FIREBASE_AUTH.onAuthStateChanged((user) => {
+      setUser(user);
+    });
+
+    return unsubscribe;
+  }, []);
+
   const signOut = async () => {
     try {
       await FIREBASE_AUTH.signOut();
@@ -17,7 +29,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   };
 
   return (
-    <AuthContext.Provider value={{ signOut }}>
+    <AuthContext.Provider value={{ signOut, user }}>
       {children}
     </AuthContext.Provider>
   );

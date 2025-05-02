@@ -1,3 +1,4 @@
+import React from 'react';
 import { NavigationContainer } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
@@ -14,6 +15,7 @@ import Login from "./src/screens/Login";
 import Home from "./src/screens/Home";
 import MyEvents from "./src/screens/MyEvents";
 import Profile from "./src/screens/Profile";
+import EventScreen from "./src/screens/EventScreen";
 
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -79,17 +81,23 @@ export default function App() {
         );
     }
 
+
     return (
         <GestureHandlerRootView style={{ flex: 1 }}>
             <AuthProvider>
                 <NavigationContainer>
                     <Stack.Navigator screenOptions={{ headerShown: false }}>
                         {user ? (
-                            <Stack.Screen name="Main" component={TabNavigator} />
+                            <>
+                                <Stack.Screen name="Main" component={TabNavigator} />
+                                <Stack.Screen name="Event" component={EventScreen} />
+                            </>
                         ) : (
-                            <Stack.Screen name="Login" component={Login} />
+                            <> 
+                                <Stack.Screen name="Login" component={Login} />
+                                <Stack.Screen name="SignUp" component={SignUp} />
+                            </>
                         )}
-                        <Stack.Screen name="SignUp" component={SignUp} />
                     </Stack.Navigator>
                 </NavigationContainer>
             </AuthProvider>
