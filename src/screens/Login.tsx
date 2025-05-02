@@ -1,35 +1,20 @@
-import { View, Text, StyleSheet, ActivityIndicator, Button, KeyboardAvoidingView, TextInput } from 'react-native';
+import { View, Text, StyleSheet, ActivityIndicator, KeyboardAvoidingView, TextInput, TouchableOpacity } from 'react-native';
 import { useState } from 'react';
 import { FIREBASE_AUTH } from '../../FirebaseConfig';
-import { createUserWithEmailAndPassword, signInWithEmailAndPassword } from 'firebase/auth';
+import { signInWithEmailAndPassword } from 'firebase/auth';
+import { Link } from '@react-navigation/native';
 
 export default function Login() {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [loading, setLoading] = useState(false);
     const auth = FIREBASE_AUTH;
-
     const signIn = async () => {
         setLoading(true);
         try {
             const response = await signInWithEmailAndPassword(auth, email, password);
-            console.log(response);
         } catch (error: any) {
-            console.log(error);
             alert(`Sign in failed: ${error.message}`);
-        } finally {
-            setLoading(false);
-        }
-    };
-
-    const signUp = async () => {
-        setLoading(true);
-        try {
-            const response = await createUserWithEmailAndPassword(auth, email, password);
-            console.log(response);
-        } catch (error: any) {
-            console.log(error);
-            alert(`Sign up failed: ${error.message}`);
         } finally {
             setLoading(false);
         }
@@ -37,6 +22,7 @@ export default function Login() {
 
     return (
         <View style={styles.container}>
+            <Text style={styles.header}>Lokit</Text>
             <KeyboardAvoidingView behavior="padding">
                 <TextInput
                     value={email}
@@ -57,10 +43,12 @@ export default function Login() {
                 {loading ? (
                     <ActivityIndicator size="large" color="#0000ff" />
                 ) : (
-                    <>
-                        <Button title="Login" onPress={signIn} />
-                        <Button title="Sign up" onPress={signUp} />
-                    </>
+                    <View style={{ justifyContent: 'space-between' }}>
+                        <TouchableOpacity style={styles.login} onPress={signIn}>
+                            <Text style={styles.buttonText}>Login</Text>
+                        </TouchableOpacity>
+                        <Text style={{textAlign: 'center'}}>Don't have an account already? <Link screen="SignUp" params={{}}>Sign up</Link></Text>
+                    </View>
                 )}
             </KeyboardAvoidingView>
         </View>
@@ -78,5 +66,25 @@ const styles = StyleSheet.create({
         padding: 10,
         borderRadius: 5,
         marginBottom: 10,
+    },
+    login: {
+        backgroundColor: '#7886C7',
+        paddingVertical: 10,
+        paddingHorizontal: 20,
+        borderRadius: 25,
+        marginVertical: 5,
+        alignItems: 'center',
+    },
+    buttonText: {
+        color: '#fff',
+        fontSize: 16,
+        fontWeight: 'bold',
+    },
+    header: {
+        color: '#2D336B',
+        fontSize: 32,
+        fontWeight: 'bold',
+        textAlign: 'center',
+        marginBottom: 30,
     },
 });
