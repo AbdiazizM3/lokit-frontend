@@ -14,7 +14,7 @@ interface Event {
     event_id: number;
     event_title: string;
     event_img_url: string;
-    location: string;
+    event_date: string;
 }
 
 export default function MyEvents({ navigation }: RouterProps) {
@@ -48,22 +48,28 @@ export default function MyEvents({ navigation }: RouterProps) {
         return <ActivityIndicator size="large" color="#2D336B" />;
     }
 
-    const renderEvents = ({ item }: { item: Event }) => (
-        <Card
-            eventId={item.event_id.toString()}
-            eventName={item.event_title}
-            eventImage={item.event_img_url}
-            onPress={() =>
+    const renderEvents = ({ item }: { item: Event }) => {
+        const isoDate = new Date(item.event_date);
+        const formattedDate = isoDate.toLocaleDateString('en-GB', {
+            year: 'numeric',
+            month: 'short',
+            day: 'numeric'
+        });
+        return (
+            <Card
+                eventId={item.event_id.toString()}
+                eventName={item.event_title}
+                eventImage={item.event_img_url}
+                eventDate={formattedDate}
+                onPress={() =>
                 navigation.navigate("Event", {
                     eventId: item.event_id,
-                    eventTitle: item.event_title,
-                    eventImage: item.event_img_url,
-                    location: item.location,
-                })
-            }
-            spanFullWidth={false}
-        />
-    );
+                    })
+                }
+                spanFullWidth={false}
+            />
+        );
+    };
 
     const EmptyState = () => (
         <View style={styles.emptyContainer}>

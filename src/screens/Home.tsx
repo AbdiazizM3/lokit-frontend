@@ -9,7 +9,7 @@ interface Event {
     event_id: number;
     event_title: string;
     event_img_url: string;
-    location: string;
+    event_date: string;
 }
 
 interface RouterProps {
@@ -38,22 +38,28 @@ export default function Home({ navigation }: RouterProps) {
         return <ActivityIndicator />;
     }
 
-    const renderEvents = ({ item }: { item: Event }) => (
-        <Card
-            eventId={item.event_id.toString()}
-            eventName={item.event_title}
-            eventImage={item.event_img_url}
-            onPress={() =>
-                navigation.navigate("Event", {
-                    eventId: item.event_id,
-                    eventTitle: item.event_title,
-                    eventImage: item.event_img_url,
-                    location: item.location,
-                })
-            }
-            spanFullWidth={false}
-        />
-    );
+    const renderEvents = ({ item }: { item: Event }) => {
+        const isoDate = new Date(item.event_date);
+        const formattedDate = isoDate.toLocaleDateString('en-GB', {
+            year: 'numeric',
+            month: 'short',
+            day: 'numeric'
+        });
+        return (
+            <Card
+                eventId={item.event_id.toString()}
+                eventName={item.event_title}
+                eventImage={item.event_img_url}
+                eventDate={formattedDate}
+                onPress={() =>
+                    navigation.navigate("Event", {
+                        eventId: item.event_id,
+                    })
+                }
+                spanFullWidth={false}
+            />
+        );
+    };
 
     return (
         <View style={{ flex: 1 }}>

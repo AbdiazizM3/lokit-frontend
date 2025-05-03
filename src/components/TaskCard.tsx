@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { Text, StyleSheet, TouchableOpacity, Image } from "react-native";
 
-const Card = ({ eventId, eventName, eventImage, eventDate, onPress, spanFullWidth }: { eventId: string, eventName: string, eventImage: string, eventDate: string, onPress: () => void, spanFullWidth: boolean }) => {
+const Card = ({ taskId, taskName, taskImage, taskStart, taskEnd, taskLocation, onPress, spanFullWidth }: { taskId: string, taskName: string, taskImage: string, taskStart: string, taskEnd: string, taskLocation: string, onPress: () => void, spanFullWidth: boolean }) => {
   return (
     <TouchableOpacity
       onPress={onPress}
@@ -9,12 +9,12 @@ const Card = ({ eventId, eventName, eventImage, eventDate, onPress, spanFullWidt
     >
       <Image
         source={
-          eventImage ? { uri: eventImage } : { uri: 'https://via.placeholder.com/150' }
+          taskImage ? { uri: taskImage } : { uri: 'https://via.placeholder.com/150' }
         }
         style={[styles.image, spanFullWidth && styles.fullWidthCard]}
       />
-      <Text style={styles.name}>{eventName}</Text>
-      <Text style={styles.date}>{eventDate}</Text>
+      <Text style={styles.name}>{taskName}</Text>
+      <Text style={styles.date}>{taskStart} - {taskEnd}</Text>
     </TouchableOpacity>
   );
 };
