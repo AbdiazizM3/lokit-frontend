@@ -71,3 +71,13 @@ export const getUserIdByEmail = async (email) => {
     throw error;
   }
 };
+
+export const getTasksByEventId = async (eventId) => {
+  try {
+    const response = await axios.get(`${API_URL}/events/${eventId}/tasks`);
+    return response.data;
+  } catch (error) {
+    console.error("Error fetching trip by ID:", error);
+    throw error;
+  }
+};
