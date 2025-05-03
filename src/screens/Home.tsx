@@ -1,7 +1,6 @@
 import { View, Text, ActivityIndicator, FlatList } from 'react-native';
 import { NavigationProp } from '@react-navigation/native';
 import Header from '../components/Header';
-import { useAuth } from '../context/AuthContext';
 import { useEffect, useState } from 'react';
 import { getEvents } from '../api';
 import Card from '../components/Card';
@@ -18,7 +17,6 @@ interface RouterProps {
 }
 
 export default function Home({ navigation }: RouterProps) {
-    const { user } = useAuth();
     const [events, setEvents] = useState<Event[]>([]);
     const [loading, setLoading] = useState(true);
 
