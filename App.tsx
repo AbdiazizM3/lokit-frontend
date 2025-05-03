@@ -90,7 +90,6 @@ export default function App() {
                         {user ? (
                             <>
                                 <Stack.Screen name="Main" component={TabNavigator} />
-                                <Stack.Screen name="Event" component={EventScreen} />
                             </>
                         ) : (
                             <> 
@@ -98,6 +97,7 @@ export default function App() {
                                 <Stack.Screen name="SignUp" component={SignUp} />
                             </>
                         )}
+                        <Stack.Screen name="Event" component={EventScreen} />
                     </Stack.Navigator>
                 </NavigationContainer>
             </AuthProvider>
