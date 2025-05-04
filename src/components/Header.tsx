@@ -5,12 +5,18 @@ interface HeaderProps {
   title: string;
   style?: ViewStyle;
   textStyle?: TextStyle;
+  leftComponent?: React.ReactNode;
 }
 
-const Header = ({ title, style, textStyle }: HeaderProps) => {
+const Header = ({ title, style, textStyle, leftComponent }: HeaderProps) => {
   return (
     <View style={[styles.header, style as ViewStyle]}>
-      <Text style={[styles.title, textStyle as TextStyle]}>{title}</Text>
+      <View style={styles.headerContent}>
+        <View style={styles.leftSection}>
+          {leftComponent || <View style={styles.backButtonPlaceholder} />}
+        </View>
+        <Text style={[styles.title, textStyle as TextStyle]}>{title}</Text>
+      </View>
     </View>
   );
 };
@@ -23,8 +29,16 @@ const styles = StyleSheet.create({
     paddingBottom: 20,
     paddingHorizontal: 20,
     backgroundColor: "#2D336B",
-    alignItems: "flex-start",
-    justifyContent: "flex-start",
+  },
+  headerContent: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  leftSection: {
+    width: 40, // Fixed width for the left section
+  },
+  backButtonPlaceholder: {
+    width: 40, // Same width as the back button area
   },
   title: {
     color: "#FFFFFF",

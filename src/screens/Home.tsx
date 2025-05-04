@@ -1,7 +1,7 @@
 import { View, Text, ActivityIndicator, FlatList } from 'react-native';
-import { NavigationProp } from '@react-navigation/native';
+import { NavigationProp, useFocusEffect } from '@react-navigation/native';
 import Header from '../components/Header';
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useCallback } from 'react';
 import { getEvents } from '../api';
 import Card from '../components/Card';
 
@@ -20,19 +20,23 @@ export default function Home({ navigation }: RouterProps) {
     const [events, setEvents] = useState<Event[]>([]);
     const [loading, setLoading] = useState(true);
 
-    useEffect(() => {
-        const fetchEvents = async () => {
-            try {
-                const response = await getEvents();
-                setEvents(response.events);
-            } catch (error) {
-                console.error('Error fetching events:', error);
-            } finally {
-                setLoading(false);
-            }
-        };
-        fetchEvents();
-    }, []);
+    const fetchEvents = async () => {
+        try {
+            setLoading(true);
+            const response = await getEvents();
+            setEvents(response.events);
+        } catch (error) {
+            console.error('Error fetching events:', error);
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    useFocusEffect(
+        useCallback(() => {
+            fetchEvents();
+        }, [])
+    );
 
     if (loading) {
         return <ActivityIndicator />;

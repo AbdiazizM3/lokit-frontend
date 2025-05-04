@@ -24,7 +24,7 @@ export const getEventById = async (id) => {
 
 export const getEventsByUserId = async (userId) => {
   try {
-    const response = await axios.get(`${API_URL}/events/user/${userId}`);
+    const response = await axios.get(`${API_URL}/users/${userId}/events`);
     return response.data;
   } catch (error) {
     console.error("Error fetching events by user ID:", error);
@@ -78,6 +78,56 @@ export const getTasksByEventId = async (eventId) => {
     return response.data;
   } catch (error) {
     console.error("Error fetching trip by ID:", error);
+    throw error;
+  }
+};
+
+export const getTaskById = async (eventId, taskId) => {
+  try {
+    const response = await axios.get(
+      `${API_URL}/events/${eventId}/tasks/${taskId}`
+    );
+    return response.data;
+  } catch (error) {
+    console.error("Error fetching task by ID:", error);
+    throw error;
+  }
+};
+
+export const addMemberToEvent = async (eventId, memberId) => {
+  try {
+    const response = await axios.post(
+      `${API_URL}/events/${eventId}/members`,
+      memberId
+    );
+    return response.data;
+  } catch (error) {
+    console.error("Error adding member to event:", error);
+    throw error;
+  }
+};
+
+export const removeMemberFromEvent = async (eventId, memberId) => {
+  try {
+    const response = await axios.delete(
+      `${API_URL}/events/${eventId}/members`,
+      { data: memberId }
+    );
+    return response.data;
+  } catch (error) {
+    console.error("Error removing member from event:", error);
+    throw error;
+  }
+};
+
+export const getEventMemberById = async (eventId, userId) => {
+  try {
+    const response = await axios.get(
+      `${API_URL}/events/${eventId}/members/${userId}`
+    );
+    return response.data;
+  } catch (error) {
+    console.error("Error fetching event member by ID:", error);
     throw error;
   }
 };

@@ -1,11 +1,12 @@
 import { View, Text, Button, ActivityIndicator, FlatList, StyleSheet } from 'react-native';
-import { NavigationProp } from '@react-navigation/native';
+import { NavigationProp, useFocusEffect } from '@react-navigation/native';
 import Header from '../components/Header';
-import { useEffect } from 'react';
-import { getEventsByUserId, getUserIdByEmail } from '../api';
+import { useEffect, useCallback } from 'react';
+import { getEventsByUserId, getUserIdByEmail, getEventById } from '../api';
 import { useState } from 'react';
 import { useAuth } from '../context/AuthContext';
 import Card from '../components/Card';
+
 interface RouterProps {
     navigation: NavigationProp<any, any>;
 }
@@ -20,29 +21,40 @@ interface Event {
 export default function MyEvents({ navigation }: RouterProps) {
     const { user } = useAuth();
     const [userId, setUserId] = useState('');
-    const [events, setEvents] = useState([]);
+    const [events, setEvents] = useState<Event[]>([]);
     const [isLoading, setIsLoading] = useState(true);
 
-    useEffect(() => {
+    const fetchEvents = useCallback(async () => {
         if (!user?.email) return;
         
-        const fetchEvents = async () => {
-            setIsLoading(true);
-            try {
-                const userResponse = await getUserIdByEmail(user?.email);
-                setUserId(userResponse.userId.user_id);
-                const response = await getEventsByUserId(userId);
-                setEvents(response || []);
-            } catch (error) {
-                console.error(error);
-                setEvents([]);
-            } finally {
-                setIsLoading(false);
-            }
-        };
-        
-        fetchEvents();
+        setIsLoading(true);
+        try {
+            const userResponse = await getUserIdByEmail(user?.email);
+            const newUserId = userResponse.userId.user_id;
+            setUserId(newUserId);
+            const response = await getEventsByUserId(newUserId);
+            
+            const eventDetails = await Promise.all(
+                response.events.map(async (event: any) => {
+                    const eventResponse = await getEventById(event.event_id);
+                    return eventResponse.event;
+                })
+            );
+            
+            setEvents(eventDetails);
+        } catch (error) {
+            console.error(error);
+            setEvents([]);
+        } finally {
+            setIsLoading(false);
+        }
     }, [user?.email]);
+
+    useFocusEffect(
+        useCallback(() => {
+            fetchEvents();
+        }, [fetchEvents])
+    );
 
     if (isLoading) {
         return <ActivityIndicator size="large" color="#2D336B" />;

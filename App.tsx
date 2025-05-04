@@ -4,11 +4,11 @@ import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { useEffect, useState } from "react";
 import { onAuthStateChanged, User } from "firebase/auth";
-import { FIREBASE_AUTH } from "./FirebaseConfig";
 import { View, ActivityIndicator } from "react-native";
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import { AuthProvider } from "./src/context/AuthContext";
+import { FIREBASE_AUTH } from "./FirebaseConfig";
 
 import SignUp from "./src/screens/SignUp";
 import Login from "./src/screens/Login";
@@ -16,6 +16,7 @@ import Home from "./src/screens/Home";
 import MyEvents from "./src/screens/MyEvents";
 import Profile from "./src/screens/Profile";
 import EventScreen from "./src/screens/EventScreen";
+import TaskScreen from "./src/screens/TaskScreen";
 
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -61,46 +62,46 @@ const TabNavigator = () => {
 };
 
 export default function App() {
-    const [user, setUser] = useState<User | null>(null);
-    const [initializing, setInitializing] = useState(true);
+  const [initializing, setInitializing] = useState(true);
+  const [user, setUser] = useState<User | null>(null);
 
-    useEffect(() => {
-        onAuthStateChanged(FIREBASE_AUTH, (user) => {
-            setUser(user);
-            if (initializing) setInitializing(false);
-        });
-    }, []);
+  useEffect(() => {
+    const unsubscribe = onAuthStateChanged(FIREBASE_AUTH, (user) => {
+      setUser(user);
+      if (initializing) setInitializing(false);
+    });
 
-    if (initializing) {
-        return (
-            <GestureHandlerRootView style={{ flex: 1 }}>
-                <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-                    <ActivityIndicator size="large" />
-                </View>
-            </GestureHandlerRootView>
-        );
-    }
+    return () => unsubscribe();
+  }, [initializing]);
 
-
+  if (initializing) {
     return (
-        <GestureHandlerRootView style={{ flex: 1 }}>
-            <AuthProvider>
-                <NavigationContainer>
-                    <Stack.Navigator screenOptions={{ headerShown: false }}>
-                        {user ? (
-                            <>
-                                <Stack.Screen name="Main" component={TabNavigator} />
-                            </>
-                        ) : (
-                            <> 
-                                <Stack.Screen name="Login" component={Login} />
-                                <Stack.Screen name="SignUp" component={SignUp} />
-                            </>
-                        )}
-                        <Stack.Screen name="Event" component={EventScreen} />
-                    </Stack.Navigator>
-                </NavigationContainer>
-            </AuthProvider>
-        </GestureHandlerRootView>
+      <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
+        <ActivityIndicator size="large" />
+      </View>
     );
+  }
+
+  return (
+    <GestureHandlerRootView style={{ flex: 1 }}>
+      <AuthProvider>
+        <NavigationContainer>
+          <Stack.Navigator screenOptions={{ headerShown: false }}>
+            {user ? (
+              <>
+                <Stack.Screen name="Main" component={TabNavigator} />
+              </>
+            ) : (
+              <>
+                <Stack.Screen name="Login" component={Login} />
+                <Stack.Screen name="SignUp" component={SignUp} />
+              </>
+            )}
+            <Stack.Screen name="Event" component={EventScreen} />
+            <Stack.Screen name="Task" component={TaskScreen} />
+          </Stack.Navigator>
+        </NavigationContainer>
+      </AuthProvider>
+    </GestureHandlerRootView>
+  );
 } 

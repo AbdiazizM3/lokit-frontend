@@ -1,11 +1,11 @@
 import React, { createContext, useContext, useEffect, useState } from 'react';
-import { FIREBASE_AUTH } from '../../FirebaseConfig';
 import { User } from 'firebase/auth';
+import { FIREBASE_AUTH } from '../../FirebaseConfig';
 
-interface AuthContextType {
-  signOut: () => Promise<void>;
+type AuthContextType = {
   user: User | null;
-}
+  signOut: () => Promise<void>;
+};
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
@@ -17,7 +17,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       setUser(user);
     });
 
-    return unsubscribe;
+    return () => unsubscribe();
   }, []);
 
   const signOut = async () => {
@@ -29,7 +29,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   };
 
   return (
-    <AuthContext.Provider value={{ signOut, user }}>
+    <AuthContext.Provider value={{ user, signOut }}>
       {children}
     </AuthContext.Provider>
   );
