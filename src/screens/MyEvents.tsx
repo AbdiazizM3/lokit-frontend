@@ -1,7 +1,7 @@
 import { View, Text, Button, ActivityIndicator, FlatList, StyleSheet } from 'react-native';
 import { NavigationProp, useFocusEffect } from '@react-navigation/native';
 import Header from '../components/Header';
-import { useEffect, useCallback } from 'react';
+import { useCallback } from 'react';
 import { getEventsByUserId, getUserIdByEmail, getEventById } from '../api';
 import { useState } from 'react';
 import { useAuth } from '../context/AuthContext';

@@ -1,7 +1,7 @@
 import { View, Text, ActivityIndicator, FlatList } from 'react-native';
 import { NavigationProp, useFocusEffect } from '@react-navigation/native';
 import Header from '../components/Header';
-import { useEffect, useState, useCallback } from 'react';
+import { useState, useCallback } from 'react';
 import { getEvents } from '../api';
 import Card from '../components/Card';
 

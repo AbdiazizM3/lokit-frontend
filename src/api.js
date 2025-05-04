@@ -131,3 +131,53 @@ export const getEventMemberById = async (eventId, userId) => {
     throw error;
   }
 };
+
+export const sendConfirmationEmail = async (
+  email,
+  eventName,
+  eventImage,
+  tasks
+) => {
+  const tasksHtml = tasks
+    .map(
+      (task) => `<li key=${task.task_id}>
+  <img src="${task.task_image}" alt="Task Image" />
+  <p>${task.task_name}</p>
+  <p>${task.task_start_time}</p>
+  <p>${task.task_end_time}</p>
+  <p>${task.task_description}</p>
+  </li>`
+    )
+    .join("");
+  try {
+    const response = await axios.post(`${API_URL}/send-email`, {
+      to: email,
+      subject: "Congratulation",
+      text: "You have been added to a new event",
+      html: `<p>You have been added to a new event: ${eventName}</p>
+      <img src="${eventImage}" alt="Event Image" />
+      <ul>
+        ${tasksHtml}
+      </ul>`,
+    });
+    return response.data;
+  } catch (error) {
+    console.error("Error sending confirmation email:", error);
+    throw error;
+  }
+};
+
+export const sendRemovalEmail = async (email, eventName) => {
+  try {
+    const response = await axios.post(`${API_URL}/send-email`, {
+      to: email,
+      subject: "Removal",
+      text: "You have been removed from an event",
+      html: `<p>You have been removed from an event: ${eventName}</p>`,
+    });
+    return response.data;
+  } catch (error) {
+    console.error("Error sending removal email:", error);
+    throw error;
+  }
+};
