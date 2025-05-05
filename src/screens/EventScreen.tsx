@@ -22,6 +22,7 @@ interface Task {
 
 type RootStackParamList = {
     Task: { taskId: string; eventId: string };
+    CreateTask: { eventId: string };
 };
 
 type NavigationProp = NativeStackNavigationProp<RootStackParamList>;
@@ -29,7 +30,7 @@ type NavigationProp = NativeStackNavigationProp<RootStackParamList>;
 export default function EventScreen({ route }: { route: any }) {
     const { eventId } = route.params;
     const navigation = useNavigation<NavigationProp>();
-    const { user } = useAuth();
+    const { user, isUserStaff } = useAuth();
     const { userId } = useUserId();
     const [isLoading, setIsLoading] = useState(true);
     const [eventImage, setEventImage] = useState('');
@@ -211,6 +212,11 @@ export default function EventScreen({ route }: { route: any }) {
                 contentContainerStyle={styles.listContent}
                 ListHeaderComponent={RenderTasks}
             />
+            {isUserStaff && (
+                <TouchableOpacity style={styles.staffButton} onPress={() => navigation.navigate('CreateTask', { eventId: eventId })}>
+                    <Text style={styles.staffText}>Create Task</Text>
+                </TouchableOpacity>
+            )}
             <Modal
                 visible={showModal}
                 transparent={true}
@@ -349,6 +355,21 @@ const styles = StyleSheet.create({
         backgroundColor: '#2D336B',
     },
     buttonText: {
+        color: '#fff',
+        fontSize: 16,
+        fontWeight: '600',
+    },
+    staffButton: {
+        backgroundColor: '#2D336B',
+        padding: 12,
+        borderRadius: 8,
+        marginHorizontal: 16,
+        marginTop: 16,
+        alignItems: 'center',
+        justifyContent: 'center',
+        marginBottom: 16,
+    },
+    staffText: {
         color: '#fff',
         fontSize: 16,
         fontWeight: '600',

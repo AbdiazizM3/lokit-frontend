@@ -19,6 +19,8 @@ import Profile from "./src/screens/Profile";
 import EventScreen from "./src/screens/EventScreen";
 import TaskScreen from "./src/screens/TaskScreen";
 import CreateEvent from "./src/screens/CreateEvent";
+import CreateTask from "./src/screens/CreateTask";
+
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
 
@@ -102,6 +104,7 @@ export default function App() {
               <Stack.Screen name="Event" component={EventScreen} />
               <Stack.Screen name="Task" component={TaskScreen} />
               <Stack.Screen name="CreateEvent" component={CreateEvent} />
+              <Stack.Screen name="CreateTask" component={CreateTask} />
             </Stack.Navigator>
           </NavigationContainer>
         </UserIdProvider>
