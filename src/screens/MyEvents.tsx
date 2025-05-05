@@ -7,7 +7,7 @@ import { useState } from 'react';
 import { useAuth } from '../context/AuthContext';
 import { useUserId } from '../context/UserIdContext';
 import Card from '../components/Card';
-
+import BackButton from '../components/BackButton';
 interface RouterProps {
     navigation: NavigationProp<any, any>;
 }
@@ -97,7 +97,7 @@ export default function MyEvents({ navigation }: RouterProps) {
     
     return (
         <View style={styles.container}>
-            <Header title="Eventlock" />
+            <Header title="Eventlock" leftComponent={<BackButton />} />
             {events.length === 0 ? (
                 <EmptyState />
             ) : (

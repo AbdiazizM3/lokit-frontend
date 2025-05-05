@@ -5,6 +5,7 @@ import { createEvent } from "../api";
 import { useUserId } from "../context/UserIdContext";
 import DateTimePicker from '@react-native-community/datetimepicker';
 import { NavigationProp } from "@react-navigation/native";
+import BackButton from "../components/BackButton";
 
 interface RouterProps {
     navigation: NavigationProp<any, any>;
@@ -17,14 +18,7 @@ export default function CreateEvent({ navigation }: RouterProps) {
     const [eventLocation, setEventLocation] = useState('');
     const [eventImage, setEventImage] = useState('');
     const [showDatePicker, setShowDatePicker] = useState(false);
-    const [isLoading, setIsLoading] = useState(true);
     const { userId } = useUserId();
-
-    useEffect(() => {
-        if (userId !== null) {
-            setIsLoading(false);
-        }
-    }, [userId]);
 
     const handleCreateEvent = async () => {
         if (!userId) return;
@@ -48,7 +42,7 @@ export default function CreateEvent({ navigation }: RouterProps) {
 
     return (
         <View style={styles.container}>
-            <Header title="Eventlock" />
+            <Header title="Eventlock" leftComponent={<BackButton />} />
             <View style={styles.form}>
                 <TextInput
                     placeholder="Event Title"
@@ -100,6 +94,7 @@ const styles = StyleSheet.create({
         flex: 1,
     },
     form: {
+        marginTop: 20,
         padding: 20,
         gap: 10,
         backgroundColor: '#fff',
