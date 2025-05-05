@@ -62,7 +62,7 @@ const Profile = () => {
 
   return (
     <View style={styles.container}>
-      <Header title="Lokit" />
+      <Header title="Eventlock" />
       {isLoading ? (
         <ActivityIndicator size="large" color="#2D336B" />
       ) : (

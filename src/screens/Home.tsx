@@ -1,9 +1,10 @@
-import { View, Text, ActivityIndicator, FlatList } from 'react-native';
+import { View, Text, ActivityIndicator, FlatList, Button, TouchableOpacity, StyleSheet } from 'react-native';
 import { NavigationProp, useFocusEffect } from '@react-navigation/native';
 import Header from '../components/Header';
-import { useEffect, useState, useCallback } from 'react';
+import { useState, useCallback } from 'react';
 import { getEvents } from '../api';
 import Card from '../components/Card';
+import { useAuth } from '../context/AuthContext';
 
 interface Event {
     event_id: number;
@@ -19,6 +20,7 @@ interface RouterProps {
 export default function Home({ navigation }: RouterProps) {
     const [events, setEvents] = useState<Event[]>([]);
     const [loading, setLoading] = useState(true);
+    const { user, isUserStaff } = useAuth();
 
     const fetchEvents = async () => {
         try {
@@ -67,14 +69,33 @@ export default function Home({ navigation }: RouterProps) {
 
     return (
         <View style={{ flex: 1 }}>
-            <Header title="Lokit" />
+            <Header title="Eventlock" />
             <FlatList
                 data={events}
                 renderItem={renderEvents}
                 keyExtractor={(item) => item.event_id.toString()}
                 contentContainerStyle={{ padding: 20, gap: 10 }}
-                numColumns={2}
+                numColumns={1}
             />
+            {isUserStaff && (
+                <TouchableOpacity onPress={() => navigation.navigate('CreateEvent')} style={styles.button}>
+                    <Text style={styles.buttonText}>+</Text>
+                </TouchableOpacity>
+            )}
         </View>
     );
 }
+
+const styles = StyleSheet.create({
+    button: {
+        position: 'absolute',
+        bottom: 20,
+        right: 20,
+        backgroundColor: '#000',
+        padding: 10,
+        borderRadius: 50,
+    },
+    buttonText: {
+        color: '#fff',
+    }
+});

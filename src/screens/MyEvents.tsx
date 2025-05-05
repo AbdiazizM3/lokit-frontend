@@ -1,10 +1,11 @@
-import { View, Text, Button, ActivityIndicator, FlatList, StyleSheet } from 'react-native';
+import { View, Text, Button, ActivityIndicator, FlatList, StyleSheet, TouchableOpacity } from 'react-native';
 import { NavigationProp, useFocusEffect } from '@react-navigation/native';
 import Header from '../components/Header';
-import { useEffect, useCallback } from 'react';
-import { getEventsByUserId, getUserIdByEmail, getEventById } from '../api';
+import { useCallback } from 'react';
+import { getEventsByUserId, getEventById } from '../api';
 import { useState } from 'react';
 import { useAuth } from '../context/AuthContext';
+import { useUserId } from '../context/UserIdContext';
 import Card from '../components/Card';
 
 interface RouterProps {
@@ -19,20 +20,20 @@ interface Event {
 }
 
 export default function MyEvents({ navigation }: RouterProps) {
-    const { user } = useAuth();
-    const [userId, setUserId] = useState('');
+    const { isUserStaff } = useAuth();
+    const { userId } = useUserId();
     const [events, setEvents] = useState<Event[]>([]);
     const [isLoading, setIsLoading] = useState(true);
 
     const fetchEvents = useCallback(async () => {
-        if (!user?.email) return;
+        if (!userId) {
+            setIsLoading(false);
+            return;
+        }
         
         setIsLoading(true);
         try {
-            const userResponse = await getUserIdByEmail(user?.email);
-            const newUserId = userResponse.userId.user_id;
-            setUserId(newUserId);
-            const response = await getEventsByUserId(newUserId);
+            const response = await getEventsByUserId(userId);
             
             const eventDetails = await Promise.all(
                 response.events.map(async (event: any) => {
@@ -48,7 +49,7 @@ export default function MyEvents({ navigation }: RouterProps) {
         } finally {
             setIsLoading(false);
         }
-    }, [user?.email]);
+    }, [userId]);
 
     useFocusEffect(
         useCallback(() => {
@@ -96,7 +97,7 @@ export default function MyEvents({ navigation }: RouterProps) {
     
     return (
         <View style={styles.container}>
-            <Header title="Lokit" />
+            <Header title="Eventlock" />
             {events.length === 0 ? (
                 <EmptyState />
             ) : (
@@ -107,6 +108,11 @@ export default function MyEvents({ navigation }: RouterProps) {
                     contentContainerStyle={{ padding: 20, gap: 10 }}
                     numColumns={2}
                 />
+            )}
+            {isUserStaff && (
+                <TouchableOpacity onPress={() => navigation.navigate('CreateEvent')} style={styles.button}>
+                    <Text style={styles.buttonText}>+</Text>
+                </TouchableOpacity>
             )}
         </View>
     );
@@ -128,4 +134,15 @@ const styles = StyleSheet.create({
         marginBottom: 20,
         textAlign: 'center',
     },
+    button: {
+        position: 'absolute',
+        bottom: 20,
+        right: 20,
+        backgroundColor: '#000',
+        padding: 10,
+        borderRadius: 50,
+    },
+    buttonText: {
+        color: '#fff',
+    }
 });

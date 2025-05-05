@@ -3,7 +3,6 @@ import { useState } from "react"
 import { createUserWithEmailAndPassword } from "firebase/auth"
 import { FIREBASE_AUTH } from "../../FirebaseConfig"
 import { createUser } from "../api"
-import { useNavigation } from "@react-navigation/native"
 
 export default function SignUp({navigation}: {navigation: any}) {
     const [firstname, setFirstname] = useState('');
@@ -44,7 +43,7 @@ export default function SignUp({navigation}: {navigation: any}) {
 
     return (
         <View style={styles.container}>
-            <Text style={styles.header}>Lokit</Text>
+            <Text style={styles.header}>Eventlock</Text>
             <KeyboardAvoidingView behavior="padding">
             <View style={{flexDirection: "row", justifyContent: "space-between"}}>
             <TextInput
