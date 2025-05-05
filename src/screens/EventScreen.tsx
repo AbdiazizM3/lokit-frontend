@@ -4,7 +4,7 @@ import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import Header from '../components/Header';
 import BackButton from '../components/BackButton';
 import { useEffect, useState, useCallback } from 'react';
-import { getEventById, getTasksByEventId, addMemberToEvent, getUserIdByEmail, getEventMemberById, removeMemberFromEvent, sendConfirmationEmail, sendRemovalEmail } from '../api';
+import { getEventById, getTasksByEventId, addMemberToEvent, getUserIdByEmail, getEventMemberById, removeMemberFromEvent } from '../api';
 import TaskCard from '../components/TaskCard';
 import { useAuth } from '../context/AuthContext';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
@@ -131,10 +131,7 @@ export default function EventScreen({ route }: { route: any }) {
         try {
             await addMemberToEvent(eventId, {user_id: userId});
             setIsMember(true);
-            if (user?.email) {
-                await sendConfirmationEmail(user.email, eventTitle, eventImage, tasks);
-            }
-            Alert.alert('Success', 'Event added to your calendar! Check your email for confirmation.');
+            Alert.alert('Success', 'Event added to your calendar!');
             setShowModal(false);
         } catch (error) {
             console.error(error);
@@ -151,10 +148,7 @@ export default function EventScreen({ route }: { route: any }) {
         try {
             await removeMemberFromEvent(eventId, {user_id: userId});
             setIsMember(false);
-            if (user?.email) {
-                await sendRemovalEmail(user.email, eventTitle);
-            }
-            Alert.alert('Success', 'Event removed from your calendar! Check your email for confirmation.');
+            Alert.alert('Success', 'Event removed from your calendar');
             setShowModal(false);
         } catch (error) {
             console.error(error);
@@ -183,7 +177,7 @@ export default function EventScreen({ route }: { route: any }) {
                 }
                 style={styles.image}
                 resizeMode="cover"
-                onError={(e: any) => {
+                onError={(e) => {
                     console.error('Error loading image:', e.nativeEvent.error);
                     setEventImage('');
                 }}

@@ -3,6 +3,7 @@ import { useState } from "react"
 import { createUserWithEmailAndPassword } from "firebase/auth"
 import { FIREBASE_AUTH } from "../../FirebaseConfig"
 import { createUser } from "../api"
+import { useNavigation } from "@react-navigation/native"
 
 export default function SignUp({navigation}: {navigation: any}) {
     const [firstname, setFirstname] = useState('');
