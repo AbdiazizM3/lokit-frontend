@@ -131,3 +131,98 @@ export const getEventMemberById = async (eventId, userId) => {
     throw error;
   }
 };
+
+export const joinEventConfirmation = async (email, eventName) => {
+  try {
+    const response = await axios.post(`${API_URL}/send-email`, {
+      to: email,
+      subject: "Lokit - Join Event Confirmation",
+      text: `Congratulations! You have been added to an event. ${eventName}`,
+    });
+    return response.data;
+  } catch (error) {
+    console.error("Error joining event by email:", error);
+    throw error;
+  }
+};
+export const leaveEventConfirmation = async (email, eventName) => {
+  try {
+    const response = await axios.post(`${API_URL}/send-email`, {
+      to: email,
+      subject: "Lokit - Leave Event Confirmation",
+      text: `You have been removed from an event. ${eventName}`,
+    });
+    return response.data;
+  } catch (error) {
+    console.error("Error leaving event by email:", error);
+    throw error;
+  }
+};
+
+export const createEvent = async (event) => {
+  try {
+    const response = await axios.post(`${API_URL}/events`, event);
+    return response.data;
+  } catch (error) {
+    console.error("Error creating event:", error);
+    throw error;
+  }
+};
+
+export const updateEvent = async (eventId, event) => {
+  try {
+    const response = await axios.patch(`${API_URL}/events/${eventId}`, event);
+    return response.data;
+  } catch (error) {
+    console.error("Error updating event:", error);
+    throw error;
+  }
+};
+
+export const deleteEvent = async (eventId) => {
+  try {
+    const response = await axios.delete(`${API_URL}/events/${eventId}`);
+    return response.data;
+  } catch (error) {
+    console.error("Error deleting event:", error);
+    throw error;
+  }
+};
+
+export const createTask = async (eventId, task) => {
+  try {
+    const response = await axios.post(
+      `${API_URL}/events/${eventId}/tasks`,
+      task
+    );
+    return response.data;
+  } catch (error) {
+    console.error("Error creating task:", error);
+    throw error;
+  }
+};
+
+export const updateTask = async (eventId, taskId, task) => {
+  try {
+    const response = await axios.patch(
+      `${API_URL}/events/${eventId}/tasks/${taskId}`,
+      task
+    );
+    return response.data;
+  } catch (error) {
+    console.error("Error updating task:", error);
+    throw error;
+  }
+};
+
+export const deleteTask = async (eventId, taskId) => {
+  try {
+    const response = await axios.delete(
+      `${API_URL}/events/${eventId}/tasks/${taskId}`
+    );
+    return response.data;
+  } catch (error) {
+    console.error("Error deleting task:", error);
+    throw error;
+  }
+};
