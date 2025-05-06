@@ -35,3 +35,7 @@ App is primarly targetted towards android devices
 Test Account
 email: lokit9944@gmail.com
 password: Adm1n3v3nt12345\*
+
+How to install:
+The link below will install Eventlock on your device
+https://expo.dev/accounts/abdiaziz_m3/projects/lokit/builds/74d8dd47-7e03-419b-b5df-55e83e649859
