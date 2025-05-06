@@ -23,6 +23,7 @@ interface Task {
 type RootStackParamList = {
     Task: { taskId: string; eventId: string };
     CreateTask: { eventId: string };
+    EditEvent: { eventId: string };
 };
 
 type NavigationProp = NativeStackNavigationProp<RootStackParamList>;
@@ -37,6 +38,7 @@ export default function EventScreen({ route }: { route: any }) {
     const [eventTitle, setEventTitle] = useState('');
     const [eventLocation, setEventLocation] = useState('');
     const [eventDate, setEventDate] = useState('');
+    const [eventDescription, setEventDescription] = useState('');
     const [tasks, setTasks] = useState<Task[]>([]);
     const [showModal, setShowModal] = useState(false);
     const [isAddingToCalendar, setIsAddingToCalendar] = useState(false);
@@ -51,6 +53,7 @@ export default function EventScreen({ route }: { route: any }) {
             setEventImage(response.event.event_img_url);
             setEventTitle(response.event.event_title);
             setEventLocation(response.event.event_location);
+            setEventDescription(response.event.event_description);
 
             const tasksResponse = await getTasksByEventId(eventId);
             setTasks(tasksResponse.tasks);
@@ -196,8 +199,23 @@ export default function EventScreen({ route }: { route: any }) {
                         />
                     </TouchableOpacity>
                 </View>
-                <Text style={styles.date}>{formattedDate}</Text>
-                <Text style={styles.location}>{eventLocation}</Text>
+                <View style={{flexDirection: 'row', justifyContent: 'space-between', width: '100%'}}>
+                    <View>
+                        <Text style={styles.date}>{formattedDate}</Text>
+                        <Text style={styles.location}>{eventLocation}</Text>
+                        <Text style={styles.description}>{eventDescription}</Text>
+                    </View>
+                <View style={{flexDirection: 'row', justifyContent: 'flex-end'}}>
+                {isUserStaff && (
+                <TouchableOpacity 
+                    style={styles.editButton} 
+                    onPress={() => navigation.navigate('EditEvent', { eventId: eventId })}
+                >
+                    <Text style={styles.editButtonText}>Edit</Text>
+                    </TouchableOpacity>
+                )}
+                </View>
+                </View>
             </View>
         </View>
     );
@@ -212,11 +230,6 @@ export default function EventScreen({ route }: { route: any }) {
                 contentContainerStyle={styles.listContent}
                 ListHeaderComponent={RenderTasks}
             />
-            {isUserStaff && (
-                <TouchableOpacity style={styles.staffButton} onPress={() => navigation.navigate('CreateTask', { eventId: eventId })}>
-                    <Text style={styles.staffText}>Create Task</Text>
-                </TouchableOpacity>
-            )}
             <Modal
                 visible={showModal}
                 transparent={true}
@@ -369,9 +382,20 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
         marginBottom: 16,
     },
-    staffText: {
+    editButton: {
+        backgroundColor: '#2D336B',
+        padding: 12,
+        borderRadius: 8,
+        marginHorizontal: 16,
+        marginTop: 16,
+    },
+    editButtonText: {
         color: '#fff',
-        fontSize: 16,
+        fontSize: 20,
         fontWeight: '600',
+    },
+    description: {
+        fontSize: 16,
+        color: '#666',
     },
 });

@@ -226,3 +226,13 @@ export const deleteTask = async (eventId, taskId) => {
     throw error;
   }
 };
+
+export const getEventMembers = async (eventId) => {
+  try {
+    const response = await axios.get(`${API_URL}/events/${eventId}/members`);
+    return response.data;
+  } catch (error) {
+    console.error("Error fetching event members:", error);
+    throw error;
+  }
+};
