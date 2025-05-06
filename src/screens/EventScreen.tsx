@@ -1,10 +1,10 @@
-import { View, Text, Image, StyleSheet, TouchableOpacity, ActivityIndicator, FlatList, Modal, Alert } from 'react-native';
+import { View, Text, Image, StyleSheet, TouchableOpacity, ActivityIndicator, FlatList, Modal, Alert, Linking } from 'react-native';
 import { useNavigation, useFocusEffect } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import Header from '../components/Header';
 import BackButton from '../components/BackButton';
 import { useState, useCallback } from 'react';
-import { getEventById, getTasksByEventId, addMemberToEvent, getUserIdByEmail, getEventMemberById, removeMemberFromEvent, joinEventConfirmation, leaveEventConfirmation } from '../api';
+import { getEventById, getTasksByEventId, addMemberToEvent, getEventMemberById, removeMemberFromEvent, joinEventConfirmation, leaveEventConfirmation } from '../api';
 import TaskCard from '../components/TaskCard';
 import { useAuth } from '../context/AuthContext';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
@@ -133,6 +133,7 @@ export default function EventScreen({ route }: { route: any }) {
             await addMemberToEvent(eventId, {user_id: userId});
             setIsMember(true);
             joinEventConfirmation(user.email, eventTitle);
+            Linking.openURL("https://calendar.google.com/calendar/u/0/r?pli=1");
             Alert.alert('Success', 'Event added to your calendar!');
             setShowModal(false);
         } catch (error) {
@@ -151,6 +152,7 @@ export default function EventScreen({ route }: { route: any }) {
             await removeMemberFromEvent(eventId, {user_id: userId});
             setIsMember(false);
             leaveEventConfirmation(user.email, eventTitle);
+            Linking.openURL("https://calendar.google.com/calendar/u/0/r?pli=1");
             Alert.alert('Success', 'Event removed from your calendar');
             setShowModal(false);
         } catch (error) {
