@@ -1,11 +1,21 @@
-import { View, Text, StyleSheet, ActivityIndicator, Image } from "react-native";
+import { View, Text, StyleSheet, ActivityIndicator, Image, TouchableOpacity, ScrollView } from "react-native";
 import Header from "../components/Header";
 import BackButton from "../components/BackButton";
 import { useEffect, useState } from "react";
-import { getTaskById } from "../api";
+import { deleteTask, getTaskById } from "../api";
+import { useAuth } from "../context/AuthContext";
+import { useNavigation } from "@react-navigation/native";
+import { NativeStackNavigationProp } from "@react-navigation/native-stack";
+
+type RootStackParamList = {
+  EditTask: { eventId: string; taskId: string };
+};
+
+type NavigationProp = NativeStackNavigationProp<RootStackParamList>;
 
 export default function TaskScreen({ route }: { route: any }) {
   const { taskId, eventId } = route.params;
+  const navigation = useNavigation<NavigationProp>();
   const [task, setTask] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
   const [taskImage, setTaskImage] = useState("");
@@ -14,6 +24,8 @@ export default function TaskScreen({ route }: { route: any }) {
   const [taskStartTime, setTaskStartTime] = useState("");
   const [taskEndTime, setTaskEndTime] = useState(""); 
   const [taskDescription, setTaskDescription] = useState("");
+  const {isUserStaff} = useAuth();
+  const [isDelete, setIsDelete] = useState(false);
 
   const formatTime = (timeString: string) => {
     if (!timeString) return 'Time not specified';
@@ -47,6 +59,11 @@ export default function TaskScreen({ route }: { route: any }) {
     fetchTask();
   }, [taskId]);
 
+  const removeTask = async () => {
+    await deleteTask(eventId, taskId);
+    navigation.goBack();
+  }
+
   if (isLoading) {
     return <ActivityIndicator size="large" color="#2D336B" />;
   }
@@ -54,9 +71,10 @@ export default function TaskScreen({ route }: { route: any }) {
   return (
     <View style={styles.container}>
       <Header title="Eventlock" leftComponent={<BackButton />} />
-      <View style={styles.content}>
-        <Image source={{ uri: taskImage }} style={styles.image} resizeMode="cover" />
-        <Text style={styles.title}>{taskTitle}</Text>
+      <ScrollView>  
+        <View style={styles.content}>
+          <Image source={{ uri: taskImage }} style={styles.image} resizeMode="cover" />
+          <Text style={styles.title}>{taskTitle}</Text>
         <Text style={styles.location}>{taskLocation}</Text>
         <View style={styles.timeContainer}>
           <Text style={styles.timeLabel}>Start Time:</Text>
@@ -67,7 +85,24 @@ export default function TaskScreen({ route }: { route: any }) {
           <Text style={styles.time}>{taskEndTime}</Text>
         </View>
         <Text style={styles.description}>{taskDescription}</Text>
+        {isUserStaff && (
+        <View style={styles.buttonContainer}>
+          <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('EditTask', { eventId: eventId, taskId: taskId })}>
+            <Text style={styles.buttonText}>Edit</Text>
+          </TouchableOpacity>
+          {!isDelete ? (
+            <TouchableOpacity style={styles.button} onPress={() => setIsDelete(true)}>
+              <Text style={styles.buttonText}>Delete</Text>
+            </TouchableOpacity>
+          ) : (
+            <TouchableOpacity style={[styles.button, styles.deleteButton]} onPress={removeTask}>
+              <Text style={styles.buttonText}>Are you sure?</Text>
+            </TouchableOpacity>
+          )}
+        </View>
+      )}
       </View>
+      </ScrollView>
     </View>
   );
 }
@@ -118,5 +153,22 @@ const styles = StyleSheet.create({
     color: '#333',
     lineHeight: 24,
     marginTop: 16,
+  },
+  buttonContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    marginTop: 16,
+  },
+  button: {
+    backgroundColor: '#2D336B',
+    padding: 10,
+    borderRadius: 5,
+  },
+  buttonText: {
+    color: '#fff',
+    fontWeight: 'bold',
+  },
+  deleteButton: {
+    backgroundColor: '#FF0000',
   },
 });

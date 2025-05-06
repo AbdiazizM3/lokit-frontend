@@ -21,6 +21,7 @@ import TaskScreen from "./src/screens/TaskScreen";
 import CreateEvent from "./src/screens/CreateEvent";
 import CreateTask from "./src/screens/CreateTask";
 import EditEvent from "./src/screens/EditEvent";
+import EditTask from "./src/screens/EditTask";
 
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -107,6 +108,7 @@ export default function App() {
               <Stack.Screen name="CreateEvent" component={CreateEvent} />
               <Stack.Screen name="CreateTask" component={CreateTask} />
               <Stack.Screen name="EditEvent" component={EditEvent} />
+              <Stack.Screen name="EditTask" component={EditTask} />
             </Stack.Navigator>
           </NavigationContainer>
         </UserIdProvider>
