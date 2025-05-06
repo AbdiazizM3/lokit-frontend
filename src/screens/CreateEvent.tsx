@@ -1,4 +1,4 @@
-import { View, Text, TextInput, Button, ActivityIndicator, StyleSheet, Platform, TouchableOpacity } from "react-native";
+import { View, Text, TextInput, Button, ActivityIndicator, StyleSheet, Platform, TouchableOpacity, Alert } from "react-native";
 import Header from "../components/Header";
 import { useState, useEffect } from "react";
 import { createEvent } from "../api";
@@ -22,6 +22,10 @@ export default function CreateEvent({ navigation }: RouterProps) {
 
     const handleCreateEvent = async () => {
         if (!userId) return;
+        if(eventTitle ==='' || eventLocation ===''){
+            Alert.alert('Please enter an event title and location');
+            return;
+        }
         const event = await createEvent({event_title: eventTitle, event_descritpion: eventDescription, event_date: eventDate, event_location: eventLocation, event_img_url: eventImage, event_created_by: userId});
         setEventTitle('');
         setEventDescription('');

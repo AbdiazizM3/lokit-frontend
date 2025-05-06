@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { View, Text, TextInput, Button, TouchableOpacity, StyleSheet} from "react-native";
+import { View, Text, TextInput, Button, TouchableOpacity, StyleSheet, Alert} from "react-native";
 import { createTask } from "../api";
 import { useNavigation } from "@react-navigation/native";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
@@ -25,6 +25,10 @@ export default function CreateTask({route}: {route: any}) {
     const [showEndTimePicker, setShowEndTimePicker] = useState(false);
 
     const postTask = async () => {
+        if(taskTitle ===''){
+            Alert.alert('Please enter a task title');
+            return;
+        }
         const response = await createTask(eventId, {
             task_title: taskTitle,
             task_description: taskDescription,
