@@ -3,6 +3,10 @@
 This is Eventlock an events platform which allows users to see local events and their schedules and sign up for them.
 Users can lock an event and revisit it later in their MyEvents page which gives users easy access to events they have signed up for.
 
+To clone this repository write git clone in the terminal with the link of the corresponding repository:
+
+git clone https://github.com/AbdiazizM3/lokit-frontend
+
 ## Get started
 
 1. Install dependencies
