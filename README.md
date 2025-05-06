@@ -7,6 +7,11 @@ To clone this repository write git clone in the terminal with the link of the co
 
 git clone https://github.com/AbdiazizM3/lokit-frontend
 
+Here is a link to the back end repo for this site which hosts the api/database I made for this project.
+https://github.com/AbdiazizM3/lokit-backend
+
+The minimun version of node required: v22.9.0
+
 ## Get started
 
 1. Install dependencies
