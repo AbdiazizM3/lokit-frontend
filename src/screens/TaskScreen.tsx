@@ -53,7 +53,7 @@ export default function TaskScreen({ route }: { route: any }) {
 
   return (
     <View style={styles.container}>
-      <Header title="Lokit" leftComponent={<BackButton />} />
+      <Header title="Eventlock" leftComponent={<BackButton />} />
       <View style={styles.content}>
         <Image source={{ uri: taskImage }} style={styles.image} resizeMode="cover" />
         <Text style={styles.title}>{taskTitle}</Text>

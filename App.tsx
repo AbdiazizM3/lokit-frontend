@@ -9,6 +9,7 @@ import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import { AuthProvider } from "./src/context/AuthContext";
 import { FIREBASE_AUTH } from "./FirebaseConfig";
+import { UserIdProvider } from './src/context/UserIdContext';
 
 import SignUp from "./src/screens/SignUp";
 import Login from "./src/screens/Login";
@@ -17,6 +18,9 @@ import MyEvents from "./src/screens/MyEvents";
 import Profile from "./src/screens/Profile";
 import EventScreen from "./src/screens/EventScreen";
 import TaskScreen from "./src/screens/TaskScreen";
+import CreateEvent from "./src/screens/CreateEvent";
+import CreateTask from "./src/screens/CreateTask";
+import EditEvent from "./src/screens/EditEvent";
 
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -85,22 +89,27 @@ export default function App() {
   return (
     <GestureHandlerRootView style={{ flex: 1 }}>
       <AuthProvider>
-        <NavigationContainer>
-          <Stack.Navigator screenOptions={{ headerShown: false }}>
-            {user ? (
-              <>
-                <Stack.Screen name="Main" component={TabNavigator} />
-              </>
-            ) : (
-              <>
-                <Stack.Screen name="Login" component={Login} />
-                <Stack.Screen name="SignUp" component={SignUp} />
-              </>
-            )}
-            <Stack.Screen name="Event" component={EventScreen} />
-            <Stack.Screen name="Task" component={TaskScreen} />
-          </Stack.Navigator>
-        </NavigationContainer>
+        <UserIdProvider>
+          <NavigationContainer>
+            <Stack.Navigator screenOptions={{ headerShown: false }}>
+              {user ? (
+                <>
+                  <Stack.Screen name="Main" component={TabNavigator} />
+                </>
+              ) : (
+                <>
+                  <Stack.Screen name="Login" component={Login} />
+                  <Stack.Screen name="SignUp" component={SignUp} />
+                </>
+              )}
+              <Stack.Screen name="Event" component={EventScreen} />
+              <Stack.Screen name="Task" component={TaskScreen} />
+              <Stack.Screen name="CreateEvent" component={CreateEvent} />
+              <Stack.Screen name="CreateTask" component={CreateTask} />
+              <Stack.Screen name="EditEvent" component={EditEvent} />
+            </Stack.Navigator>
+          </NavigationContainer>
+        </UserIdProvider>
       </AuthProvider>
     </GestureHandlerRootView>
   );

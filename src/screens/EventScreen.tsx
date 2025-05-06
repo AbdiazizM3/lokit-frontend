@@ -3,11 +3,12 @@ import { useNavigation, useFocusEffect } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import Header from '../components/Header';
 import BackButton from '../components/BackButton';
-import { useEffect, useState, useCallback } from 'react';
-import { getEventById, getTasksByEventId, addMemberToEvent, getUserIdByEmail, getEventMemberById, removeMemberFromEvent } from '../api';
+import { useState, useCallback } from 'react';
+import { getEventById, getTasksByEventId, addMemberToEvent, getUserIdByEmail, getEventMemberById, removeMemberFromEvent, joinEventConfirmation, leaveEventConfirmation } from '../api';
 import TaskCard from '../components/TaskCard';
 import { useAuth } from '../context/AuthContext';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
+import { useUserId } from '../context/UserIdContext';
 
 interface Task {
     task_id: number;
@@ -21,6 +22,8 @@ interface Task {
 
 type RootStackParamList = {
     Task: { taskId: string; eventId: string };
+    CreateTask: { eventId: string };
+    EditEvent: { eventId: string };
 };
 
 type NavigationProp = NativeStackNavigationProp<RootStackParamList>;
@@ -28,18 +31,19 @@ type NavigationProp = NativeStackNavigationProp<RootStackParamList>;
 export default function EventScreen({ route }: { route: any }) {
     const { eventId } = route.params;
     const navigation = useNavigation<NavigationProp>();
-    const { user } = useAuth();
+    const { user, isUserStaff } = useAuth();
+    const { userId } = useUserId();
     const [isLoading, setIsLoading] = useState(true);
     const [eventImage, setEventImage] = useState('');
     const [eventTitle, setEventTitle] = useState('');
     const [eventLocation, setEventLocation] = useState('');
     const [eventDate, setEventDate] = useState('');
+    const [eventDescription, setEventDescription] = useState('');
     const [tasks, setTasks] = useState<Task[]>([]);
     const [showModal, setShowModal] = useState(false);
     const [isAddingToCalendar, setIsAddingToCalendar] = useState(false);
     const [isMember, setIsMember] = useState(false);
     const [modalType, setModalType] = useState<'join' | 'leave'>('join');
-    const [userId, setUserId] = useState<string | null>(null);
 
     const fetchEventData = async () => {
         setIsLoading(true);
@@ -49,17 +53,14 @@ export default function EventScreen({ route }: { route: any }) {
             setEventImage(response.event.event_img_url);
             setEventTitle(response.event.event_title);
             setEventLocation(response.event.event_location);
+            setEventDescription(response.event.event_description);
 
             const tasksResponse = await getTasksByEventId(eventId);
             setTasks(tasksResponse.tasks);
 
-            if (user?.email) {
-                const userResponse = await getUserIdByEmail(user.email);
-                const currentUserId = userResponse.userId.user_id;
-                setUserId(currentUserId);
-                
+            if (userId) {
                 try {
-                    const memberResponse = await getEventMemberById(eventId, currentUserId);
+                    const memberResponse = await getEventMemberById(eventId, userId);
                     setIsMember(memberResponse && memberResponse.eventMember ? true : false);
                 } catch (error) {
                     setIsMember(false);
@@ -75,10 +76,10 @@ export default function EventScreen({ route }: { route: any }) {
     useFocusEffect(
         useCallback(() => {
             fetchEventData();
-        }, [eventId, user?.email])
+        }, [eventId, userId])
     );
 
-    if(isLoading){
+    if (isLoading) {
         return <ActivityIndicator size="large" color="#2D336B" />;
     }
 
@@ -131,6 +132,7 @@ export default function EventScreen({ route }: { route: any }) {
         try {
             await addMemberToEvent(eventId, {user_id: userId});
             setIsMember(true);
+            joinEventConfirmation(user.email, eventTitle);
             Alert.alert('Success', 'Event added to your calendar!');
             setShowModal(false);
         } catch (error) {
@@ -142,12 +144,13 @@ export default function EventScreen({ route }: { route: any }) {
     };
 
     const handleRemoveFromCalendar = async () => {
-        if (!userId) return;
+        if (!userId || !user?.email) return;
 
         setIsAddingToCalendar(true);
         try {
             await removeMemberFromEvent(eventId, {user_id: userId});
             setIsMember(false);
+            leaveEventConfirmation(user.email, eventTitle);
             Alert.alert('Success', 'Event removed from your calendar');
             setShowModal(false);
         } catch (error) {
@@ -196,15 +199,30 @@ export default function EventScreen({ route }: { route: any }) {
                         />
                     </TouchableOpacity>
                 </View>
-                <Text style={styles.date}>{formattedDate}</Text>
-                <Text style={styles.location}>{eventLocation}</Text>
+                <View style={{flexDirection: 'row', justifyContent: 'space-between', width: '100%'}}>
+                    <View>
+                        <Text style={styles.date}>{formattedDate}</Text>
+                        <Text style={styles.location}>{eventLocation}</Text>
+                        <Text style={styles.description}>{eventDescription}</Text>
+                    </View>
+                <View style={{flexDirection: 'row', justifyContent: 'flex-end'}}>
+                {isUserStaff && (
+                <TouchableOpacity 
+                    style={styles.editButton} 
+                    onPress={() => navigation.navigate('EditEvent', { eventId: eventId })}
+                >
+                    <Text style={styles.editButtonText}>Edit</Text>
+                    </TouchableOpacity>
+                )}
+                </View>
+                </View>
             </View>
         </View>
     );
     
     return (
         <View style={styles.container}>
-            <Header title="Lokit" leftComponent={<BackButton />} />
+            <Header title="Eventlock" leftComponent={<BackButton />} />
             <FlatList
                 data={tasks}
                 renderItem={renderTasks}
@@ -353,5 +371,31 @@ const styles = StyleSheet.create({
         color: '#fff',
         fontSize: 16,
         fontWeight: '600',
+    },
+    staffButton: {
+        backgroundColor: '#2D336B',
+        padding: 12,
+        borderRadius: 8,
+        marginHorizontal: 16,
+        marginTop: 16,
+        alignItems: 'center',
+        justifyContent: 'center',
+        marginBottom: 16,
+    },
+    editButton: {
+        backgroundColor: '#2D336B',
+        padding: 12,
+        borderRadius: 8,
+        marginHorizontal: 16,
+        marginTop: 16,
+    },
+    editButtonText: {
+        color: '#fff',
+        fontSize: 20,
+        fontWeight: '600',
+    },
+    description: {
+        fontSize: 16,
+        color: '#666',
     },
 });

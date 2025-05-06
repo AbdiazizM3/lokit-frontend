@@ -22,7 +22,7 @@ export default function Login() {
 
     return (
         <View style={styles.container}>
-            <Text style={styles.header}>Lokit</Text>
+            <Text style={styles.header}>Eventlock</Text>
             <KeyboardAvoidingView behavior="padding">
                 <TextInput
                     value={email}
