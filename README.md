@@ -1,46 +1,71 @@
-# Eventlock
+# Eventlock – Your Local Events Companion
 
-This is Eventlock an events platform which allows users to see local events and their schedules and sign up for them.
-Users can lock an event and revisit it later in their MyEvents page which gives users easy access to events they have signed up for.
+Eventlock is a mobile events platform that helps users discover local events, view their schedules, and register for them. Users can “lock” events to revisit later in the MyEvents page, giving them a personalized dashboard of the events they've signed up for.
 
-To clone this repository write git clone in the terminal with the link of the corresponding repository:
+<img width=800 alt="Eventlock screens display" src="https://github.com/AbdiazizM3/lokit-frontend/tree/main/assets/images/1000040803.jpg">
 
-git clone https://github.com/AbdiazizM3/lokit-frontend
+# Project Repositories
 
-Here is a link to the back end repo for this site which hosts the api/database I made for this project.
+Frontend (Expo + React Native):
+https://github.com/AbdiazizM3/lokit-frontend
+
+Backend (Node.js + API + Database):
 https://github.com/AbdiazizM3/lokit-backend
 
-The minimun version of node required: v22.9.0
+# Getting Started
 
-## Get started
+Prerequisites:
 
-1. Install dependencies
+Node.js: Minimum required version is v22.9.0
 
-   ```bash
-   npm install
-   ```
+Expo Go App: Must be using SDK version 52
 
-2. Start the app
+Recommended device: Android
 
-   ```bash
-    npx expo start
-   ```
+# Install Dependencies
 
-In the output, you'll find options to open the app in a
+run the following command in the terminal
 
-- [development build](https://docs.expo.dev/develop/development-builds/introduction/)
-- [Android emulator](https://docs.expo.dev/workflow/android-studio-emulator/)
-- [iOS simulator](https://docs.expo.dev/workflow/ios-simulator/)
-- [Expo Go](https://expo.dev/go), a limited sandbox for trying out app development with Expo
+- npm install
 
-SDK requirements
-Expo go must be using Ver 52
-App is primarly targetted towards android devices
+# Start the App
 
-Test Account
-email: lokit9944@gmail.com
-password: Adm1n3v3nt12345\*
+run the following command in the terminal
 
-How to install:
-The link below will install Eventlock on your device
-https://expo.dev/accounts/abdiaziz_m3/projects/lokit/builds/74d8dd47-7e03-419b-b5df-55e83e649859
+- npx expo start
+
+You will be presented with several options
+
+To run this build you must install SDK version 52 of Expo Go on your android device:
+
+SDK 52 - https://expo.dev/go?sdkVersion=52&platform=android&device=true
+
+# Test Account
+
+Use the following test credentials to explore the app:
+
+Email: lokit9944@gmail.com
+
+Password: Adm1n3v3nt12345\*
+
+# Install the App on Your Device
+
+You can install Eventlock directly on your mobile device via this Expo link:
+
+👉 https://expo.dev/accounts/abdiaziz_m3/projects/lokit/builds/74d8dd47-7e03-419b-b5df-55e83e649859
+
+# Features
+
+Discover local events
+
+View detailed event schedules
+
+Register for and “lock” events for quick access
+
+Access saved events in your personalized MyEvents page
+
+# Notes
+
+This app is primarily targeted toward Android devices.
+
+Development is done using React Native and Expo for streamlined cross-platform performance.
