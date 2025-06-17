@@ -2,7 +2,7 @@
 
 Eventlock is a mobile events platform that helps users discover local events, view their schedules, and register for them. Users can “lock” events to revisit later in the MyEvents page, giving them a personalized dashboard of the events they've signed up for.
 
-<img width=800 alt="Eventlock screens display" src="https://github.com/AbdiazizM3/lokit-frontend/tree/main/assets/images/1000040803.jpg"/>
+<img width=800 alt="Eventlock screens display" src="https://github.com/AbdiazizM3/lokit-frontend/tree/main/assets/images/1000040803">
 
 # Project Repositories
 
